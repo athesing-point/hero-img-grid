@@ -1,0 +1,13 @@
+/* Initial state for animation */
+.hero-img-mask-wrap {
+  opacity: 0;
+  /* Initial offset for animation */
+  transform: translateY(20px);
+}
+
+/* Hide elements on mobile, showing only the first 3 */
+@media (max-width: 479px) {
+  .hero-bg-grid > .hero-img-mask-wrap:nth-child(n + 4) {
+    display: none;
+  }
+}
