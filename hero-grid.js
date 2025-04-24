@@ -8,44 +8,74 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const heroSection = document.querySelector(".hero-section");
     const allWraps = gsap.utils.toArray(".hero-img-mask-wrap");
     const specialElements = document.querySelectorAll(".pq-route, .video-trigger");
-    const mouseParallaxIntensity = 10; // Lower intensity for subtle background effect
-    const wrapData = []; // To store quickTo functions
+    // const mouseParallaxIntensity = 10; // REMOVED
+    // const wrapData = []; // REMOVED
 
-    // --- Initial Animation (REMOVED - Now handled by CSS) ---
-    /*
-    gsap.to(allWraps, {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      stagger: 0.1,
-      ease: "power2.out",
-      onComplete: setupMouseInteractions
-    });
-    */
+    // --- Function to Initialize ScrollTrigger Parallax ---
+    function initializeScrollTrigger() {
+      console.log("Attempting to initialize ScrollTrigger parallax...");
+      const scrollParallaxSpeeds = { col1: -20, col2: -40, col3: -60, col4: -80 };
+      Object.keys(scrollParallaxSpeeds).forEach((colKey, index) => {
+        const colNum = index + 1;
+        const speed = scrollParallaxSpeeds[colKey];
+        const targetSelector = `.hero-bg-grid [id$="-col${colNum}"]`;
+        const targets = gsap.utils.toArray(targetSelector);
+        console.log(`Found ${targets.length} elements for selector: ${targetSelector}`);
 
-    // --- Scroll Parallax ---
-    const scrollParallaxSpeeds = { col1: -20, col2: -40, col3: -60, col4: -80 };
-    Object.keys(scrollParallaxSpeeds).forEach((colKey, index) => {
-      const colNum = index + 1;
-      const speed = scrollParallaxSpeeds[colKey];
-      gsap.to(`.hero-bg-grid [id$="-col${colNum}"]`, {
-        yPercent: speed,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".hero-section",
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
+        if (targets.length > 0) {
+          gsap.to(targets, {
+            yPercent: speed,
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".hero-section",
+              start: "top top",
+              end: "bottom top",
+              scrub: true,
+            },
+          });
+        } else {
+          console.log("No elements found for selector: " + targetSelector);
+        }
       });
-    });
+      // Refresh ScrollTrigger once after setting up all tweens, with a tiny delay
+      setTimeout(() => {
+        console.log("Refreshing ScrollTrigger...");
+        ScrollTrigger.refresh();
+      }, 10);
+    }
+
+    // --- Wait for CSS animation to end on the last item before initializing ScrollTrigger ---
+    const lastAnimatedItem = document.querySelector(".hero-bg-grid > .hero-img-mask-wrap:nth-child(9)"); // Adjust if more items
+
+    if (lastAnimatedItem) {
+      // Check if animation has already ended (e.g., if loaded quickly or scrolled past)
+      // We check computed style opacity; assumes opacity is 1 only after animation
+      if (window.getComputedStyle(lastAnimatedItem).opacity === "1") {
+        initializeScrollTrigger();
+      } else {
+        lastAnimatedItem.addEventListener(
+          "animationend",
+          () => {
+            console.log("animationend event fired on last item.");
+            initializeScrollTrigger();
+          },
+          { once: true }
+        );
+      }
+    } else {
+      // Fallback: If the 9th item doesn't exist (e.g., fewer items), initialize immediately or with a small delay
+      // For simplicity here, we'll initialize immediately, but a short setTimeout could be used.
+      initializeScrollTrigger();
+      // setTimeout(initializeScrollTrigger, 100); // Alternative fallback
+    }
 
     // --- Setup Mouse Interactions (Called directly now) ---
     setupMouseInteractions();
 
     // --- Mouse Interactions Setup Function ---
     function setupMouseInteractions() {
-      // Setup quickTo for General Mouse Parallax
+      // Setup quickTo for General Mouse Parallax (REMOVED)
+      /*
       allWraps.forEach((wrap, i) => {
         const duration = gsap.utils.random(0.6, 1.0);
         wrapData.push({
@@ -54,7 +84,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
           yTo: gsap.quickTo(wrap, "y", { duration: duration, ease: "power2" }),
         });
       });
+      */
 
+      // REMOVED handleMouseMove and handleMouseLeave functions
+      /*
       const handleMouseMove = (e) => {
         let x = e.clientX - window.innerWidth / 2;
         let y = e.clientY - window.innerHeight / 2;
@@ -73,19 +106,22 @@ document.addEventListener("DOMContentLoaded", (event) => {
           data.yTo(0);
         });
       };
+      */
 
-      // Add general parallax listeners only if heroSection exists
+      // Add general parallax listeners only if heroSection exists (REMOVED)
+      /*
       if (heroSection) {
         heroSection.addEventListener("mousemove", handleMouseMove);
         heroSection.addEventListener("mouseleave", handleMouseLeave);
       }
+      */
 
       // Setup Specific Hover Effects
       specialElements.forEach((el) => {
         el.addEventListener("mouseenter", () => {
           gsap.to(el, {
-            scale: 1.08,
-            filter: "brightness(1.1)",
+            scale: 1.03, // Reduced scale
+            // filter: "brightness(1.05)", // Optional: Reduced brightness or remove
             duration: 0.3,
             ease: "power1.out",
             overwrite: "auto",
@@ -95,7 +131,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         el.addEventListener("mouseleave", () => {
           gsap.to(el, {
             scale: 1,
-            filter: "brightness(1)",
+            // filter: "brightness(1)", // Match removal if filter was removed above
             duration: 0.5,
             ease: "power1.out",
             overwrite: "auto",
