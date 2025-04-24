@@ -15,10 +15,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
     function initializeScrollTrigger() {
       console.log("Attempting to initialize ScrollTrigger parallax...");
       const scrollParallaxSpeeds = { col1: -20, col2: -40, col3: -60, col4: -80 };
+
+      // Animate columns
       Object.keys(scrollParallaxSpeeds).forEach((colKey, index) => {
         const colNum = index + 1;
         const speed = scrollParallaxSpeeds[colKey];
-        const targetSelector = `.hero-bg-grid [id$="-col${colNum}"]`;
+        const targetSelector = `.hero-bg-grid [id$=\"-col${colNum}\"]`;
         const targets = gsap.utils.toArray(targetSelector);
         console.log(`Found ${targets.length} elements for selector: ${targetSelector}`);
 
@@ -33,41 +35,39 @@ document.addEventListener("DOMContentLoaded", (event) => {
               scrub: true,
             },
           });
+
+          // --- REMOVED: Animate image within col1 to reveal ---
+          // --- END REMOVED ---
         } else {
           console.log("No elements found for selector: " + targetSelector);
         }
       });
+
       // Refresh ScrollTrigger once after setting up all tweens, with a tiny delay
       setTimeout(() => {
         console.log("Refreshing ScrollTrigger...");
         ScrollTrigger.refresh();
-      }, 10);
+      }, 10); // Maybe increase delay slightly if needed? 50ms?
     }
 
-    // --- Wait for CSS animation to end on the last item before initializing ScrollTrigger ---
-    const lastAnimatedItem = document.querySelector(".hero-bg-grid > .hero-img-mask-wrap:nth-child(9)"); // Adjust if more items
+    // --- GSAP Initial Entrance Animation ---
+    // Set initial state (hidden)
+    gsap.set(allWraps, { opacity: 0, y: 20 });
 
-    if (lastAnimatedItem) {
-      // Check if animation has already ended (e.g., if loaded quickly or scrolled past)
-      // We check computed style opacity; assumes opacity is 1 only after animation
-      if (window.getComputedStyle(lastAnimatedItem).opacity === "1") {
+    // Animate to final state (visible)
+    gsap.to(allWraps, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8, // Duration of the fade/move up
+      stagger: 0.1, // Stagger amount between items
+      ease: "power2.out",
+      delay: 0.2, // Small delay before starting the whole sequence
+      onComplete: () => {
+        console.log("GSAP entrance animation complete.");
+        // Initialize ScrollTrigger Parallax ONLY AFTER entrance animation finishes
         initializeScrollTrigger();
-      } else {
-        lastAnimatedItem.addEventListener(
-          "animationend",
-          () => {
-            console.log("animationend event fired on last item.");
-            initializeScrollTrigger();
-          },
-          { once: true }
-        );
-      }
-    } else {
-      // Fallback: If the 9th item doesn't exist (e.g., fewer items), initialize immediately or with a small delay
-      // For simplicity here, we'll initialize immediately, but a short setTimeout could be used.
-      initializeScrollTrigger();
-      // setTimeout(initializeScrollTrigger, 100); // Alternative fallback
-    }
+      },
+    });
 
     // --- Setup Mouse Interactions (Called directly now) ---
     setupMouseInteractions();
@@ -124,76 +124,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     // Call the arrow animation setup function
     // Ensure this is called after potential waits (like animationend) if needed,
     // but for now, let's try calling it directly after mouse interactions setup.
+    // Now that ScrollTrigger init is delayed, ensure this isn't called too early if it depends on ScrollTrigger's setup.
+    // However, this specific arrow animation seems independent or triggers later, so likely okay here.
     // If the arrow SVG is part of the initially animated grid, it might need adjustment.
     initializeArrowAnimation();
-
-    // --- Mouse Interactions Setup Function ---
-    function setupMouseInteractions() {
-      // Setup quickTo for General Mouse Parallax (REMOVED)
-      /*
-      allWraps.forEach((wrap, i) => {
-        const duration = gsap.utils.random(0.6, 1.0);
-        wrapData.push({
-          element: wrap,
-          xTo: gsap.quickTo(wrap, "x", { duration: duration, ease: "power2" }),
-          yTo: gsap.quickTo(wrap, "y", { duration: duration, ease: "power2" }),
-        });
-      });
-      */
-
-      // REMOVED handleMouseMove and handleMouseLeave functions
-      /*
-      const handleMouseMove = (e) => {
-        let x = e.clientX - window.innerWidth / 2;
-        let y = e.clientY - window.innerHeight / 2;
-        let moveX = (x / (window.innerWidth / 2)) * mouseParallaxIntensity;
-        let moveY = (y / (window.innerHeight / 2)) * mouseParallaxIntensity;
-
-        wrapData.forEach((data) => {
-          data.xTo(moveX);
-          data.yTo(moveY);
-        });
-      };
-
-      const handleMouseLeave = () => {
-        wrapData.forEach((data) => {
-          data.xTo(0);
-          data.yTo(0);
-        });
-      };
-      */
-
-      // Add general parallax listeners only if heroSection exists (REMOVED)
-      /*
-      if (heroSection) {
-        heroSection.addEventListener("mousemove", handleMouseMove);
-        heroSection.addEventListener("mouseleave", handleMouseLeave);
-      }
-      */
-
-      // Setup Specific Hover Effects
-      specialElements.forEach((el) => {
-        el.addEventListener("mouseenter", () => {
-          gsap.to(el, {
-            scale: 1.03, // Reduced scale
-            // filter: "brightness(1.05)", // Optional: Reduced brightness or remove
-            duration: 0.3,
-            ease: "power1.out",
-            overwrite: "auto",
-          });
-        });
-
-        el.addEventListener("mouseleave", () => {
-          gsap.to(el, {
-            scale: 1,
-            // filter: "brightness(1)", // Match removal if filter was removed above
-            duration: 0.5,
-            ease: "power1.out",
-            overwrite: "auto",
-          });
-        });
-      });
-    }
   } else {
     console.error("GSAP or ScrollTrigger is not loaded.");
   }

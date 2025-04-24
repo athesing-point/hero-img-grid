@@ -1,8 +1,8 @@
 /* Initial state for animation */
 .hero-img-mask-wrap {
-  opacity: 0;
+  /* opacity: 0; */
   /* Initial offset for animation */
-  transform: translateY(20px);
+  /* transform: translateY(20px); */
 }
 
 /* Hide elements on mobile, showing only the first 3 */

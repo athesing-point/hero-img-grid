@@ -10,21 +10,23 @@
 }
 
 .hero-img-mask-wrap {
-  /* Set initial state for the animation */
-  opacity: 0;
-  transform: translateY(20px);
-  will-change: transform; /* Optimize for transform changes */
+  /* Default state - GSAP will handle the initial animation */
+  /* Start hidden to prevent FOUC before GSAP takes over */
+  /* opacity: 0; */
+  /* transform: translateY(0); */ /* Or transform: none; GSAP will set initial y */
+  will-change: transform, opacity; /* Optimize for transform and opacity changes */
 
-  /* Apply animation */
+  /* REMOVED CSS Animation properties */
+  /*
   animation-name: fadeInUp;
-  animation-duration: 0.8s; /* Match GSAP duration */
-  animation-timing-function: ease-out; /* Similar to power2.out */
-  animation-fill-mode: forwards; /* Keep final state */
-  animation-delay: 0s; /* Default delay for first item */
+  animation-duration: 0.8s;
+  animation-timing-function: ease-out;
+  animation-delay: 0s;
+  */
 }
 
-/* Stagger the animation using nth-child selectors */
-/* Adjust delays as needed to match the desired stagger */
+/* REMOVED Staggered animation delay rules */
+/*
 .hero-bg-grid > .hero-img-mask-wrap:nth-child(1) {
   animation-delay: 0s;
 }
@@ -52,6 +54,7 @@
 .hero-bg-grid > .hero-img-mask-wrap:nth-child(9) {
   animation-delay: 0.8s;
 }
+*/
 /* Add more if there are more than 9 grid items */
 
 /* We still need the original mobile hiding rule from hero-grid.css */
