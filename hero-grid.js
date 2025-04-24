@@ -72,6 +72,53 @@ document.addEventListener("DOMContentLoaded", (event) => {
     // --- Setup Mouse Interactions (Called directly now) ---
     setupMouseInteractions();
 
+    // --- SVG Arrow Drawing Animation ---
+    function initializeArrowAnimation() {
+      const arrowSvg = document.querySelector("#hero-arrow-svg");
+      if (!arrowSvg) {
+        console.log("Arrow SVG (#hero-arrow-svg) not found. Skipping animation. Ensure it's embedded inline.");
+        return;
+      }
+      const arrowPathMain = arrowSvg.querySelector("#arrow-path-main");
+      const arrowPathHead = arrowSvg.querySelector("#arrow-path-head");
+
+      if (!arrowPathMain || !arrowPathHead) {
+        console.log("Arrow paths (#arrow-path-main or #arrow-path-head) not found within the SVG.");
+        return;
+      }
+
+      // Get lengths of paths
+      const mainLength = arrowPathMain.getTotalLength();
+      const headLength = arrowPathHead.getTotalLength();
+
+      // Set initial state: hide paths by making dash offset equal to length
+      gsap.set([arrowPathMain, arrowPathHead], {
+        strokeDasharray: (i, target) => target.getTotalLength(),
+        strokeDashoffset: (i, target) => target.getTotalLength(),
+        autoAlpha: 1, // Ensure paths are visible once drawn
+      });
+
+      // Create timeline for drawing animation triggered by scroll
+      const arrowTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: arrowSvg,
+          start: "top 85%", // Start animation when 85% of the SVG top hits the viewport bottom
+          end: "bottom 60%", // Adjust timing as needed
+          scrub: 1, // Smooth scrubbing effect
+          // markers: true, // Uncomment for debugging ScrollTrigger bounds
+        },
+      });
+
+      // Animate the drawing
+      arrowTl.to(arrowPathMain, { strokeDashoffset: 0, duration: 2, ease: "power1.inOut" }).to(arrowPathHead, { strokeDashoffset: 0, duration: 1, ease: "power1.inOut" }, "-=1.2"); // Start head slightly before main line finishes
+    }
+
+    // Call the arrow animation setup function
+    // Ensure this is called after potential waits (like animationend) if needed,
+    // but for now, let's try calling it directly after mouse interactions setup.
+    // If the arrow SVG is part of the initially animated grid, it might need adjustment.
+    initializeArrowAnimation();
+
     // --- Mouse Interactions Setup Function ---
     function setupMouseInteractions() {
       // Setup quickTo for General Mouse Parallax (REMOVED)
