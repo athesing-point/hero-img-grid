@@ -91,10 +91,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
       const mainLength = arrowPathMain.getTotalLength();
       const headLength = arrowPathHead.getTotalLength();
 
+      // Store the original dash array value from the main path
+      const originalDasharray = arrowPathMain.getAttribute("stroke-dasharray") || "none"; // Fallback to none
+
       // Set initial state: hide paths by making dash offset equal to length
+      // Temporarily set dasharray to full length to make it solid for the draw animation
       gsap.set([arrowPathMain, arrowPathHead], {
-        strokeDasharray: (i, target) => target.getTotalLength(),
-        strokeDashoffset: (i, target) => target.getTotalLength(),
+        strokeDasharray: (i, target) => target.getTotalLength(), // Solid line = dash = length
+        strokeDashoffset: (i, target) => target.getTotalLength(), // Offset = length (hidden)
         autoAlpha: 1, // Ensure paths are visible once drawn
       });
 
@@ -109,8 +113,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
         },
       });
 
-      // Animate the drawing
-      arrowTl.to(arrowPathMain, { strokeDashoffset: 0, duration: 2, ease: "power1.inOut" }).to(arrowPathHead, { strokeDashoffset: 0, duration: 1, ease: "power1.inOut" }, "-=1.2"); // Start head slightly before main line finishes
+      // Animate the drawing (solid line appears)
+      arrowTl
+        .to(arrowPathMain, { strokeDashoffset: 0, duration: 2, ease: "power1.inOut" })
+        .to(arrowPathHead, { strokeDashoffset: 0, duration: 1, ease: "power1.inOut" }, "-=1.2")
+        // After drawing, instantly set the main path back to its original dasharray
+        .set(arrowPathMain, { strokeDasharray: originalDasharray }, ">"); // ">" places it at the very end
     }
 
     // Call the arrow animation setup function
