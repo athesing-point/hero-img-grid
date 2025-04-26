@@ -1,0 +1,2 @@
+.hero-img-mask-wrap{will-change:transform,opacity}@media (max-width: 991px){.hero-bg-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr;gap:1rem;width:100%}.hero-bg-grid>.hero-img-mask-wrap:not(#row1-col4):not(#row3-col2):not(#row4-col1){display:none}.hero-bg-grid>.hero-img-mask-wrap{grid-column:auto;grid-row:1}}@media (max-width: 479px){.hero-bg-grid{gap:.5rem}}
+/*# sourceMappingURL=hero-grid.css.map */

@@ -14,13 +14,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
     // --- Function to Initialize ScrollTrigger Parallax ---
     function initializeScrollTrigger() {
       console.log("Attempting to initialize ScrollTrigger parallax...");
-      const scrollParallaxSpeeds = { col1: -20, col2: -40, col3: -60, col4: -80 };
+      const scrollParallaxSpeeds = { col1: -25, col2: -50, col3: -75, col4: -100 };
 
       // Animate columns
       Object.keys(scrollParallaxSpeeds).forEach((colKey, index) => {
         const colNum = index + 1;
         const speed = scrollParallaxSpeeds[colKey];
-        const targetSelector = `.hero-bg-grid [id$=\"-col${colNum}\"]`;
+        const targetSelector = `.hero-bg-grid [id$="-col${colNum}"]`;
         const targets = gsap.utils.toArray(targetSelector);
         console.log(`Found ${targets.length} elements for selector: ${targetSelector}`);
 
@@ -32,7 +32,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
               trigger: ".hero-section",
               start: "top top",
               end: "bottom top",
-              scrub: true,
+              scrub: 1,
+              markers: false,
+              invalidateOnRefresh: true,
+              anticipatePin: 1,
             },
           });
 
@@ -43,34 +46,62 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
       });
 
-      // Refresh ScrollTrigger once after setting up all tweens, with a tiny delay
+      // Refresh ScrollTrigger once after setting up all tweens, with a tiny delay (REMOVED - Refresh now happens in animationend listener)
+      /*
       setTimeout(() => {
         console.log("Refreshing ScrollTrigger...");
         ScrollTrigger.refresh();
-      }, 10); // Maybe increase delay slightly if needed? 50ms?
+      }, 100);
+      */
     }
 
-    // --- GSAP Initial Entrance Animation ---
+    // --- GSAP Initial Entrance Animation --- (REMOVED)
+    /*
     // Set initial state (hidden)
+    // Note: Initial state also set in hero-grid.css to prevent FOUC
     gsap.set(allWraps, { opacity: 0, y: 20 });
 
     // Animate to final state (visible)
     gsap.to(allWraps, {
       opacity: 1,
       y: 0,
-      duration: 0.8, // Duration of the fade/move up
-      stagger: 0.1, // Stagger amount between items
+      duration: 0.6, // Using the faster duration from before
+      stagger: 0.07, // Using the faster stagger from before
       ease: "power2.out",
-      delay: 0.2, // Small delay before starting the whole sequence
+      delay: 0, // Start animation sooner for LCP/FCP
       onComplete: () => {
         console.log("GSAP entrance animation complete.");
         // Initialize ScrollTrigger Parallax ONLY AFTER entrance animation finishes
         initializeScrollTrigger();
       },
     });
+    */
 
-    // --- Setup Mouse Interactions (Called directly now) ---
-    setupMouseInteractions();
+    // Initialize ScrollTrigger Parallax directly (REMOVED - Now waits for CSS animation)
+    // initializeScrollTrigger();
+
+    // --- Wait for CSS Animation to End Before Initializing Parallax ---
+    const wraps = gsap.utils.toArray(".hero-img-mask-wrap");
+    const lastWrap = wraps.length > 0 ? wraps[wraps.length - 1] : null;
+
+    if (lastWrap) {
+      console.log("Waiting for animation end on:", lastWrap);
+      lastWrap.addEventListener(
+        "animationend",
+        () => {
+          console.log("CSS animation ended on last element. Initializing ScrollTrigger.");
+          initializeScrollTrigger();
+          console.log("Refreshing ScrollTrigger immediately after setup...");
+          ScrollTrigger.refresh(); // Refresh immediately after setup
+        },
+        { once: true }
+      ); // Ensure listener runs only once
+    } else {
+      console.log("No .hero-img-mask-wrap found, initializing ScrollTrigger immediately.");
+      // Fallback if no wraps found
+      initializeScrollTrigger();
+      ScrollTrigger.refresh(); // Also refresh in fallback
+    }
 
     // --- SVG Arrow Drawing Animation ---
     function initializeArrowAnimation() {

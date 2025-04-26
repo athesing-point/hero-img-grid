@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../hero-grid.css"],
+  "sourcesContent": ["/* Essential layout and performance styles */\n.hero-img-mask-wrap {\n  will-change: transform, opacity;\n}\n\n/* Tablet and below grid adjustments */\n@media (max-width: 991px) {\n  .hero-bg-grid {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    grid-template-rows: 1fr;\n    gap: 1rem;\n    width: 100%;\n  }\n\n  /* Hide all image columns except row1-col4, row3-col2, and row4-col1 */\n  .hero-bg-grid > .hero-img-mask-wrap:not(#row1-col4):not(#row3-col2):not(#row4-col1) {\n    display: none;\n  }\n\n  /* Reset any existing grid-area or positioning */\n  .hero-bg-grid > .hero-img-mask-wrap {\n    grid-column: auto;\n    grid-row: 1;\n  }\n}\n\n/* Additional mobile adjustments */\n@media (max-width: 479px) {\n  .hero-bg-grid {\n    gap: 0.5rem;\n  }\n}\n"],
+  "mappings": "AACA,CAAC,mBACC,YAAa,SAAS,CAAE,OAC1B,CAGA,OAAO,CAAC,SAAS,EAAE,OACjB,CAAC,aACC,QAAS,KACT,sBAAuB,OAAO,CAAC,CAAE,KACjC,mBAAoB,IACpB,IAAK,KACL,MAAO,IACT,CAGA,CATC,YASa,CAAE,CAfjB,kBAeoC,KAAK,CAAC,UAAU,KAAK,CAAC,UAAU,KAAK,CAAC,WACvE,QAAS,IACX,CAGA,CAdC,YAca,CAAE,CApBjB,mBAqBG,YAAa,KACb,SAAU,CACZ,CACF,CAGA,OAAO,CAAC,SAAS,EAAE,OACjB,CAtBC,aAuBC,IAAK,KACP,CACF",
+  "names": []
+}

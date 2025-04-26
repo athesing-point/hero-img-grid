@@ -1,13 +1,33 @@
-/* Initial state for animation */
+/* Essential layout and performance styles */
 .hero-img-mask-wrap {
-  /* opacity: 0; */
-  /* Initial offset for animation */
-  /* transform: translateY(20px); */
+  will-change: transform, opacity;
 }
 
-/* Hide elements on mobile, showing only the first 3 */
-@media (max-width: 479px) {
-  .hero-bg-grid > .hero-img-mask-wrap:nth-child(n + 4) {
+/* Tablet and below grid adjustments */
+@media (max-width: 991px) {
+  .hero-bg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  /* Hide all image columns except row1-col4, row3-col2, and row4-col1 */
+  .hero-bg-grid > .hero-img-mask-wrap:not(#row1-col4):not(#row3-col2):not(#row4-col1) {
     display: none;
+  }
+
+  /* Reset any existing grid-area or positioning */
+  .hero-bg-grid > .hero-img-mask-wrap {
+    grid-column: auto;
+    grid-row: 1;
+  }
+}
+
+/* Additional mobile adjustments */
+@media (max-width: 479px) {
+  .hero-bg-grid {
+    gap: 0.5rem;
   }
 }
