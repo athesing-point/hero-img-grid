@@ -1,33 +1,161 @@
 /* Essential layout and performance styles */
-.hero-img-mask-wrap {
+.hero-grid-img {
   will-change: transform, opacity;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeSlideUp 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
-/* Tablet and below grid adjustments */
+.hero-illy-arrow {
+  opacity: 0;
+  transform: scale(0);
+  animation: scaleIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Override non-interactive properties for video triggers */
+.hero-grid-img.video-trigger {
+  user-select: auto;
+  -webkit-user-select: auto;
+  -webkit-user-drag: auto;
+  pointer-events: auto;
+}
+
+/* Staggered animation delays for each grid item - starting from bottom left */
+#row4-col1 {
+  animation-delay: 0s;
+}
+#row4-col2 {
+  animation-delay: 0.15s;
+}
+#row4-col3 {
+  animation-delay: 0.3s;
+}
+#row4-col4 {
+  animation-delay: 0.45s;
+}
+#row3-col2 {
+  animation-delay: 0.6s;
+}
+#row3-col3 {
+  animation-delay: 0.75s;
+}
+#row3-col4 {
+  animation-delay: 0.9s;
+}
+#row2-col3 {
+  animation-delay: 1.05s;
+}
+#row2-col4 {
+  animation-delay: 1.2s;
+}
+#row1-col4 {
+  animation-delay: 1.35s;
+}
+
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Checklist layout styles */
+/*
+.hero-checks .rtf-checklists ul {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 0;
+  margin: 0;
+}
+*/
+
+/* Remove bottom margin on LI for wider screens */
+@media (min-width: 992px) {
+  /* Checklist: Remove bottom margin on desktop */
+  /*
+  .hero-checks .rtf-checklists ul li,
+  .hero-checks .rtf-checklists ul li * {
+    margin-bottom: 0;
+  }
+  */
+}
+
+/* Tablet row layout */
 @media (max-width: 991px) {
-  .hero-bg-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 1fr;
-    gap: 1rem;
+  /* Checklist: Tablet row layout and font size */
+  /*
+  .hero-checks .rtf-checklists ul {
+    justify-content: flex-start;
+    gap: 2rem;
+  }
+  .hero-checks .rtf-checklists ul li,
+  .hero-checks .rtf-checklists ul li * {
+    font-size: 1.125rem !important;
+  }
+  */
+}
+
+/* Mobile stacked layout */
+@media (max-width: 912px) {
+  /* Checklist: Stack vertically on mobile/tablet */
+  /*
+  .hero-checks .rtf-checklists ul {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
     width: 100%;
   }
-
-  /* Hide all image columns except row1-col4, row3-col2, and row4-col1 */
-  .hero-bg-grid > .hero-img-mask-wrap:not(#row1-col4):not(#row3-col2):not(#row4-col1) {
-    display: none;
+  .hero-checks .rtf-checklists ul li,
+  .hero-checks .rtf-checklists ul li * {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
   }
-
-  /* Reset any existing grid-area or positioning */
-  .hero-bg-grid > .hero-img-mask-wrap {
-    grid-column: auto;
-    grid-row: 1;
-  }
+  */
 }
 
-/* Additional mobile adjustments */
-@media (max-width: 479px) {
-  .hero-bg-grid {
+/* Center stacked items below 767px */
+@media (max-width: 767px) {
+  /* Checklist: Center and tighten gap on mobile */
+  /*
+  .hero-checks .rtf-checklists ul {
+    align-items: center;
     gap: 0.5rem;
   }
+  .hero-checks .rtf-checklists ul li,
+  .hero-checks .rtf-checklists ul li * {
+    margin-bottom: 0;
+  }
+  */
+}
+
+/* Video overlay hover styles */
+.hero-grid-video-overlay {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.modal1:hover .hero-grid-video-overlay,
+.modal2:hover .hero-grid-video-overlay {
+  opacity: 0;
 }
